@@ -35,22 +35,22 @@ class ConfigBasedFactory
         }
 
         $dependencies = [];
-        foreach ($config as $depFQCN) {
-            if ($depFQCN === ContainerInterface::class) {
+        foreach ($config as $dep_fqcn) {
+            if ($dep_fqcn === ContainerInterface::class) {
                 $dependencies[] = $container;
                 continue;
             }
-            if (!class_exists($depFQCN)) {
+            if (!class_exists($dep_fqcn)) {
                 throw new RuntimeException(
-                    "Unable to load the dependency class `{$depFQCN}`!"
+                    "Unable to load the dependency class `{$dep_fqcn}`!"
                 );
             }
-            if (!$container->has($depFQCN)) {
+            if (!$container->has($dep_fqcn)) {
                 throw new RuntimeException(
-                    "Unable to load the dependency `{$depFQCN}` for class `{$fqcn}`!"
+                    "Unable to load the dependency `{$dep_fqcn}` for class `{$fqcn}`!"
                 );
             }
-            $dependencies[] = $container->get($depFQCN);
+            $dependencies[] = $container->get($dep_fqcn);
         }
 
         return new $fqcn(...$dependencies);
