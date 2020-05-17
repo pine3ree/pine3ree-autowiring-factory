@@ -23,32 +23,34 @@ class ReflectionBasedFactory
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
+        /** @var \ReflectionParameter[] $params */
         $params = $this->getConstructorParams($fqcn);
 
-        // parameter-less dependencies
+        // parameter-less object constructor
         if (empty($params)) {
             return new $fqcn();
         }
 
-        $ctor_args = [];
+        $args = [];
         foreach ($params as $param) {
             $prc = $param->getClass();
-            if (! $prc instanceof ReflectionClass) {
-                if ($param->isDefaultValueAvailable()) {
-                    $ctor_args[] = $param->getDefaultValue();
-                    continue;
-                }
+            if ($prc instanceof ReflectionClass) {
+                $depFQCN = $prc->getName();
+                $args[] = ContainerInterface::class === $depFQCN
+                    ? $container
+                    : $container->get($depFQCN);
+            } elseif ($param->isDefaultValueAvailable()) {
+                $args[] = $param->getDefaultValue();
+            } else {
                 throw new RuntimeException(sprintf(
-                    "Cannot build a constructor, parameter `%s` is not a dependency FQCN!",
+                    "Cannot build the object of class `{$fqcn}`, parameter `%s`"
+                    . " is not a dependency FQCN!",
                     $param->getName()
                 ));
             }
-            $ctor_args[] = ContainerInterface::class === ($depFQCN = $prc->getName())
-                ? $container
-                : $container->get($depFQCN);
         }
 
-        return $rc->newInstanceArgs($ctor_args);
+        return $rc->newInstanceArgs($args);
     }
 
     /**
