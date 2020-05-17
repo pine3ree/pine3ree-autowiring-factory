@@ -23,7 +23,6 @@ class ReflectionBasedFactory
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
-        /** @var \ReflectionParameter[] $params */
         $params = $this->getConstructorParams($fqcn);
 
         // parameter-less dependencies
