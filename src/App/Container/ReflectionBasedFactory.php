@@ -20,16 +20,16 @@ use function sprintf;
 class ReflectionBasedFactory
 {
     /** @var \ReflectionClass[] */
-    private $reflection_classes = [];
+    private $reflectionClasses = [];
 
     /** @var \ReflectionParameter[] */
-    private $ctor_params = [];
+    private $constructorParams = [];
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
         $rc = $this->getReflectionClass($fqcn);
 
-        $params = $this->ctor_params[$fqcn];
+        $params = $this->constructorParams[$fqcn];
 
         // parameter-less object constructor
         if (empty($params)) {
@@ -66,19 +66,19 @@ class ReflectionBasedFactory
      */
     private function getReflectionClass(string $fqcn): ReflectionClass
     {
-        if (isset($this->reflection_classes[$fqcn])) {
-            return $this->reflection_classes[$fqcn];
+        if (isset($this->reflectionClasses[$fqcn])) {
+            return $this->reflectionClasses[$fqcn];
         }
 
         $rc = new ReflectionClass($fqcn);
 
         // constructor-less dependencies
-        if (is_null($ctor = $rc->getConstructor())) {
-            $this->ctor_params[$fqcn] = [];
+        if (is_null($constructor = $rc->getConstructor())) {
+            $this->constructorParams[$fqcn] = [];
         }
 
         /** @var \ReflectionParameter[] $params */
-        $this->ctor_params[$fqcn] = $ctor->getParameters();
+        $this->constructorParams[$fqcn] = $constructor->getParameters();
 
         return $rc;
     }
