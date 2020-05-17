@@ -19,12 +19,17 @@ use function sprintf;
  */
 class ReflectionBasedFactory
 {
-    private $resolvedParams = [];
+    /** @var \ReflectionClass[] */
+    private $reflection_classes = [];
+
+    /** @var \ReflectionParameter[] */
+    private $ctor_params = [];
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
-        /** @var \ReflectionParameter[] $params */
-        $params = $this->getConstructorParams($fqcn);
+        $rc = $this->getReflectionClass($fqcn);
+
+        $params = $this->ctor_params[$fqcn];
 
         // parameter-less object constructor
         if (empty($params)) {
@@ -54,25 +59,27 @@ class ReflectionBasedFactory
     }
 
     /**
+     * Resolve and cache a reflection-class and its constructor-parameters for a give FQCNù
+     *
      * @param string $fqcn
      * @return ReflectionParameter[]
      */
-    private function getConstructorParams(string $fqcn): array
+    private function getReflectionClass(string $fqcn): ReflectionClass
     {
-        if (isset($this->resolvedParams[$fqcn])) {
-            return $this->resolvedParams[$fqcn];
+        if (isset($this->reflection_classes[$fqcn])) {
+            return $this->reflection_classes[$fqcn];
         }
 
         $rc = new ReflectionClass($fqcn);
 
         // constructor-less dependencies
         if (is_null($ctor = $rc->getConstructor())) {
-            $this->resolvedParams[$fqcn] = [];
-            return [];
+            $this->ctor_params[$fqcn] = [];
         }
 
         /** @var \ReflectionParameter[] $params */
-        $this->resolvedParams[$fqcn] = $params = $ctor->getParameters();
-        return $params;
+        $this->ctor_params[$fqcn] = $ctor->getParameters();
+
+        return $rc;
     }
 }
