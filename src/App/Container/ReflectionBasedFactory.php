@@ -3,7 +3,7 @@
 /**
  * @author pine3ree https://github.com/pine3ree
  * @package p3im
- * @subpackage p3im-action
+ * @subpackage p3im-app
  */
 
 namespace App\Container;
@@ -19,10 +19,10 @@ use function sprintf;
  */
 class ReflectionBasedFactory
 {
-    /** @var \ReflectionClass[] */
+    /** @var ReflectionClass[] */
     private $reflectionClasses = [];
 
-    /** @var \ReflectionParameter[] */
+    /** @var ReflectionParameter[] */
     private $constructorParams = [];
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
@@ -41,7 +41,7 @@ class ReflectionBasedFactory
             $prc = $param->getClass();
             if ($prc instanceof ReflectionClass) {
                 $depFQCN = $prc->getName();
-                $args[] = ContainerInterface::class === $depFQCN
+                $args[] = $depFQCN === ContainerInterface::class
                     ? $container
                     : $container->get($depFQCN);
             } elseif ($param->isDefaultValueAvailable()) {
