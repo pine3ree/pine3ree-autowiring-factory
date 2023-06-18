@@ -9,6 +9,7 @@
 namespace App\Container;
 
 use ReflectionClass;
+use ReflectionMethod;
 use RuntimeException;
 use Psr\Container\ContainerInterface;
 
@@ -19,19 +20,18 @@ use function sprintf;
  */
 class ReflectionBasedFactory
 {
-    /** @var ReflectionClass[] */
+    /** @var ReflectionClass[]|array<string, ReflectionClass> */
     private $reflectionClasses = [];
 
-    /** @var ReflectionParameter[] */
+    /** @var ReflectionParameter[]|array<string, ReflectionParameter> */
     private $constructorParams = [];
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
         $rc = $this->getReflectionClass($fqcn);
-
         $params = $this->constructorParams[$fqcn];
 
-        // parameter-less object constructor
+        // Parameter-less object constructor or consructor-less object
         if (empty($params)) {
             return new $fqcn();
         }
@@ -40,10 +40,10 @@ class ReflectionBasedFactory
         foreach ($params as $param) {
             $prc = $param->getClass();
             if ($prc instanceof ReflectionClass) {
-                $depFQCN = $prc->getName();
-                $args[] = $depFQCN === ContainerInterface::class
+                $depFqcn = $prc->getName();
+                $args[] = $depFqcn === ContainerInterface::class
                     ? $container
-                    : $container->get($depFQCN);
+                    : $container->get($depFqcn);
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $param->getDefaultValue();
             } else {
@@ -62,7 +62,7 @@ class ReflectionBasedFactory
      * Resolve and cache a reflection-class and its constructor-parameters for a give FQCNù
      *
      * @param string $fqcn
-     * @return ReflectionParameter[]
+     * @return ReflectionClass
      */
     private function getReflectionClass(string $fqcn): ReflectionClass
     {
@@ -71,14 +71,12 @@ class ReflectionBasedFactory
         }
 
         $rc = new ReflectionClass($fqcn);
+        $constructor = $rc->getConstructor();
 
-        // constructor-less dependencies
-        if (is_null($constructor = $rc->getConstructor())) {
-            $this->constructorParams[$fqcn] = [];
-        }
-
-        /** @var \ReflectionParameter[] $params */
-        $this->constructorParams[$fqcn] = $constructor->getParameters();
+        $this->reflectionClasses[$fqcn] = $rc;
+        $this->constructorParams[$fqcn] = $constructor instanceof ReflectionMethod
+            ? $constructor->getParameters()
+            : []; // Constructor-less service
 
         return $rc;
     }
