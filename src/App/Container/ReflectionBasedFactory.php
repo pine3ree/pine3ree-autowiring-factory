@@ -40,10 +40,10 @@ class ReflectionBasedFactory
         foreach ($params as $param) {
             $prc = $param->getClass();
             if ($prc instanceof ReflectionClass) {
-                $depFqcn = $prc->getName();
-                $args[] = $depFqcn === ContainerInterface::class
+                $dep_fqcn = $prc->getName();
+                $args[] = $dep_fqcn === ContainerInterface::class
                     ? $container
-                    : $container->get($depFqcn);
+                    : $container->get($dep_fqcn);
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $param->getDefaultValue();
             } else {

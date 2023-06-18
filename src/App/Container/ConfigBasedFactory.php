@@ -1,18 +1,18 @@
 <?php
 
 /**
+ * @package p3im-im
+ * @subpackage p3im-app
  * @author pine3ree https://github.com/pine3ree
- * @package p3im
- * @subpackage p3im-action
  */
 
 namespace App\Container;
 
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Throwable;
-use Psr\Container\ContainerInterface;
 
-use function sprintf;
+use function class_exists;
 
 /**
  * A generic factory that resolves and injects dependencies from configuration
