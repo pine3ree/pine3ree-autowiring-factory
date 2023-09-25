@@ -66,8 +66,9 @@ class ReflectionBasedFactory
      */
     private function getReflectionClass(string $fqcn): ReflectionClass
     {
-        if (isset($this->reflectionClasses[$fqcn])) {
-            return $this->reflectionClasses[$fqcn];
+        $rc = $this->reflectionClasses[$fqcn] ?? null;
+        if (!empty($rc)) {
+            return $rc;
         }
 
         $rc = new ReflectionClass($fqcn);
