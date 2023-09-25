@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @author pine3ree https://github.com/pine3ree
- * @package p3im
- * @subpackage p3im-app
+ * @package    p3im
+ * @subpackage p3im-app-container
+ * @author     pine3ree https://github.com/pine3ree
  */
 
 namespace App\Container;
