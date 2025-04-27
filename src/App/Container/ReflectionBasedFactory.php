@@ -9,6 +9,7 @@
 namespace App\Container;
 
 use App\Container\ParamsResolver;
+use App\Container\ParamsResolverInterface;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -25,8 +26,8 @@ class ReflectionBasedFactory
         }
 
         $paramsResolver
-            = $container->has(ParamsResolver::class)
-            ? $container->get(ParamsResolver::class)
+            = $container->has(ParamsResolverInterface::class)
+            ? $container->get(ParamsResolverInterface::class)
             : new ParamsResolver($container);
 
         $args = $paramsResolver->resolve([$fqcn, '__construct']);
