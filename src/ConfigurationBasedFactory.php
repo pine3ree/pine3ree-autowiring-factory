@@ -67,7 +67,7 @@ class ConfigurationBasedFactory
             } elseif ($dep_name === ContainerInterface::class || $dep_name === get_class($container)) {
                 $dependencies[] = $container;
             } elseif ($container->has($dep_name)) {
-               $dependencies[] = $container->get($dep_name);
+                $dependencies[] = $container->get($dep_name);
             } else {
                 throw new RuntimeException(
                     "Unable to load the dependency `{$dep_name}` for class `{$fqcn}`!"
