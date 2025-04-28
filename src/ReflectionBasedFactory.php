@@ -73,4 +73,21 @@ class ReflectionBasedFactory
 
         return empty($args) ? new $fqcn() : new $fqcn(...$args);
     }
+
+    /**
+     * Fetch a catched resolver for given container, if any
+     *
+     * @param ContainerInterface $container
+     * @return ParamsResolverInterface|null
+     *
+     * @internal Used in unit tests
+     */
+    public function getCachedParamsResolver(ContainerInterface $container): ?ParamsResolverInterface
+    {
+        if ($this->storage->offsetExists($container)) {
+            return $this->storage->offsetGet($container);
+        }
+
+        return null;
+    }
 }
