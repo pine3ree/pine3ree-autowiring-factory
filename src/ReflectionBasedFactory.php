@@ -21,6 +21,10 @@ use function method_exists;
  */
 class ReflectionBasedFactory
 {
+    /**
+     * Params resolvers cached by container
+     * @var SplObjectStorage<ContainerInterface, ParamsResolverInterface>
+     */
     private SplObjectStorage $storage;
 
     public function __construct()
