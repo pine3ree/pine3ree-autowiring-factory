@@ -91,7 +91,7 @@ class ReflectionBasedFactoryTest extends TestCase
         self::assertInstanceOf(Baz::class, $baz);
     }
 
-    public function testThatPrivateConstructorClassRaisesException()
+    public function testThatNonexistentClassRaisesException()
     {
         $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
 
