@@ -12,6 +12,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
 use SplObjectStorage;
+use Throwable;
 use pine3ree\Container\ParamsResolver;
 use pine3ree\Container\ParamsResolverInterface;
 
@@ -70,9 +71,12 @@ class ReflectionBasedFactory
             $storage->attach($container, $paramsResolver);
         }
 
-        $args = $paramsResolver->resolve([$fqcn, '__construct']);
-
-        return empty($args) ? new $fqcn() : new $fqcn(...$args);
+        try {
+            $args = $paramsResolver->resolve([$fqcn, '__construct']);
+            return empty($args) ? new $fqcn() : new $fqcn(...$args);
+        } catch (Throwable $ex) {
+            throw new RuntimeException($ex->getMessage());
+        }
     }
 
     /**

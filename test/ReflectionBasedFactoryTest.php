@@ -120,6 +120,31 @@ class ReflectionBasedFactoryTest extends TestCase
         self::assertInstanceOf($fqcn, $obj);
     }
 
+    public function testThatNonResolvableDependenciesRaiseExceptions()
+    {
+        $fqcn = Foo::class;
+
+        $paramsResolver = $this->getMockBuilder(ParamsResolverInterface::class)->getMock();
+        $paramsResolver->method('resolve')->willReturnMap([
+            [[$fqcn, '__construct'], null, []],
+        ]);
+
+        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
+        $container->method('has')->willReturnMap([
+            [Bar::class, false],
+            [Baz::class, false],
+            ['bar', false],
+            ['baz', false],
+            [ParamsResolverInterface::class, true],
+        ]);
+        $container->method('get')->willReturnMap([
+            [ParamsResolverInterface::class, $paramsResolver],
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        ($this->factory)($container, $fqcn);
+    }
+
     public function testThatParamsResolversAreCached()
     {
         $fqcn = Bar::class;
