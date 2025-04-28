@@ -69,6 +69,12 @@ class ConfigurationBasedFactory
             }
         }
 
-        return new $fqcn(...$dependencies);
+        try {
+            return new $fqcn(...$dependencies);
+        } catch (Throwable $ex) {
+            throw new RuntimeException(
+                "Unable to instantiate an object of class `{$fqcn}` with provided configuration"
+            );
+        }
     }
 }
