@@ -1,16 +1,15 @@
 <?php
 
 /**
- * @package    p3im
- * @subpackage p3im-app-container
- * @author     pine3ree https://github.com/pine3ree
+ * @package p3im-abstract-factories
+ * @author  pine3ree https://github.com/pine3ree
  */
 
-namespace App\Container;
+namespace pine3ree\Container;
 
-use App\Container\ParamsResolver;
-use App\Container\ParamsResolverInterface;
 use Psr\Container\ContainerInterface;
+use pine3ree\Container\ParamsResolver;
+use pine3ree\Container\ParamsResolverInterface;
 
 /**
  * A generic factory that resolves and injects dependencies using reflection

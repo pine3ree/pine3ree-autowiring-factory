@@ -1,12 +1,11 @@
 <?php
 
 /**
- * @package p3im-im
- * @subpackage p3im-app
- * @author pine3ree https://github.com/pine3ree
+ * @package p3im-abstract-factories
+ * @author  pine3ree https://github.com/pine3ree
  */
 
-namespace App\Container;
+namespace pine3ree\Container;
 
 use Psr\Container\ContainerInterface;
 use RuntimeException;
