@@ -9,9 +9,9 @@ namespace pine3ree\Container\Factory;
 
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use ReflectionMethod;
 use RuntimeException;
 use SplObjectStorage;
-use Throwable;
 use pine3ree\Container\ParamsResolver;
 use pine3ree\Container\ParamsResolverInterface;
 
@@ -48,6 +48,7 @@ class ReflectionBasedFactory
 
         $rc = new ReflectionClass($fqcn);
         $rm = $rc->getConstructor();
+        /** @var ReflectionMethod $rm Existence tested before */
         if ($rm->isPrivate()) {
             throw new RuntimeException(
                 "Unable to call the private constructor of the requested class `{$fqcn}`"
