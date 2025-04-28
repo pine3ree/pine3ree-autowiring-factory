@@ -17,6 +17,9 @@ use function is_string;
 /**
  * A generic factory that resolves and injects dependencies from configuration
  *
+ * Note: all dependencies must be explicitly defined and sorted accordingly to the
+ * class constructor signature
+ *
  * The $config array must be stored in the container and will be searched using the following keys
  *
  * $config['config|configuration']['dependencies']['pine3ree\Container\ConfigBasedFactory'][$fqcn]
