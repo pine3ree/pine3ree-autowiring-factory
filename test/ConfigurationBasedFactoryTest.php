@@ -152,7 +152,6 @@ class ConfigurationBasedFactoryTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         ($this->factory)($container, Bat::class);
-//        self::assertInstanceOf(Baz::class, $baz);
     }
 
     public function testThatClassesWithNoDependenciesAreInstantiated()
