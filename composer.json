@@ -42,14 +42,14 @@
     },
     "autoload": {
         "psr-4": {
-            "pine3ree\\Container\\": "src/"
+            "pine3ree\\Container\\Factory\\": "src/"
         },
         "files": [
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "pine3ree\\test\\Container\\": "test/"
+            "pine3ree\\test\\Container\\Factory\\": "test/"
         }
     },
     "scripts": {

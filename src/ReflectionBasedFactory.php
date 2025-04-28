@@ -5,7 +5,7 @@
  * @author  pine3ree https://github.com/pine3ree
  */
 
-namespace pine3ree\Container;
+namespace pine3ree\Container\Factory;
 
 use Psr\Container\ContainerInterface;
 use pine3ree\Container\ParamsResolver;
