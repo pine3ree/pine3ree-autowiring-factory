@@ -8,12 +8,14 @@
 namespace pine3ree\Container\Factory;
 
 use Psr\Container\ContainerInterface;
-use pine3ree\Container\ParamsResolver;
-use pine3ree\Container\ParamsResolverInterface;
+use ReflectionClass;
 use RuntimeException;
 use SplObjectStorage;
 use Throwable;
+use pine3ree\Container\ParamsResolver;
+use pine3ree\Container\ParamsResolverInterface;
 
+use function class_exists;
 use function method_exists;
 
 /**
@@ -34,14 +36,22 @@ class ReflectionBasedFactory
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
+        if (!class_exists($fqcn)) {
+            throw new RuntimeException(
+                "Unable to load the requested class `{$fqcn}`"
+            );
+        }
+
         if (!method_exists($fqcn, '__construct')) {
-            try {
-                return new $fqcn();
-            } catch (Throwable $ex) {
-                throw new RuntimeException(
-                    "Unable ti instantiate a constructor-less object of class `{$fqcn}`"
-                );
-            }
+            return new $fqcn();
+        }
+
+        $rc = new ReflectionClass($fqcn);
+        $rm = $rc->getConstructor();
+        if ($rm->isPrivate()) {
+            throw new RuntimeException(
+                "Unable to call the private constructor of the requested class `{$fqcn}`"
+            );
         }
 
         $storage = $this->storage;
