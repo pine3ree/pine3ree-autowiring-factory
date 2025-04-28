@@ -12,6 +12,7 @@ use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Throwable;
 
+use function class_exists;
 use function get_class;
 use function is_array;
 use function is_string;
