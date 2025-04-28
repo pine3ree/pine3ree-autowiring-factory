@@ -46,6 +46,9 @@ class ReflectionBasedFactory
         } else {
             if ($container->has(ParamsResolverInterface::class)) {
                 $paramsResolver = $container->get(ParamsResolverInterface::class);
+                if ($paramsResolver instanceof ParamsResolverInterface) {
+                    $paramsResolver = new ParamsResolver($container);
+                }
             } else {
                 $paramsResolver = new ParamsResolver($container);
             }
