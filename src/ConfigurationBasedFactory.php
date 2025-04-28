@@ -13,6 +13,7 @@ use Throwable;
 
 use function get_class;
 use function is_string;
+use function method_exists;
 
 /**
  * A generic factory that resolves and injects dependencies from configuration
