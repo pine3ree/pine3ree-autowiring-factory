@@ -7,11 +7,13 @@
 
 namespace pine3ree\Container\Factory;
 
+use ArrayObject;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Throwable;
 
 use function get_class;
+use function is_array;
 use function is_string;
 use function method_exists;
 
@@ -43,6 +45,13 @@ class ConfigurationBasedFactory
             $config = null;
         }
 
+        if (isset($config) && !(is_array($config) || $config instanceof ArrayObject)) {
+            throw new RuntimeException(
+                "Invalid container configuration type. Only array and ArrayObject"
+                . " are accepted."
+            );
+        }
+
         // Try nested and direct configuration key
         $fqcn_dependency_config = $config['dependencies'][static::class][$fqcn]
             ?? $config[static::class][$fqcn]
@@ -56,6 +65,13 @@ class ConfigurationBasedFactory
                     "Mandatory factory configuration not found for class `{$fqcn}`!"
                 );
             }
+        }
+
+        if (!(is_array($fqcn_dependency_config) || $fqcn_dependency_config instanceof ArrayObject)) {
+            throw new RuntimeException(
+                "Invalid dependency configuration type for class `{$fqcn}`."
+                . " Only array and ArrayObject are accepteable types."
+            );
         }
 
         $dependencies = [];

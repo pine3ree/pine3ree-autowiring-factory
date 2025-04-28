@@ -11,6 +11,7 @@ namespace pine3ree\test\Container\Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
+use stdClass;
 use Throwable;
 use pine3ree\Container\Factory\ConfigurationBasedFactory;
 use pine3ree\test\Container\Factory\Asset\Bar;
@@ -168,7 +169,7 @@ class ConfigurationBasedFactoryTest extends TestCase
         self::assertInstanceOf(Bar::class, $bar);
     }
 
-    public function testThatClassesWithNoDependencyConfigurationRaiseException()
+    public function testThatClassesWithMissingMandatoryDependencyConfigurationRaiseException()
     {
         $hasReturnMap = $this->hasReturnMap;
         $hasReturnMap[] = ['config', false];
@@ -179,6 +180,49 @@ class ConfigurationBasedFactoryTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         ($this->factory)($container, Foo::class);
+    }
+
+    /**
+     * @dataProvider provideInvalidConfigurations
+     */
+    public function testThatInvalidMandatoryConfigurationRaiseException($config)
+    {
+        $hasReturnMap = $this->hasReturnMap;
+        $hasReturnMap[] = ['config', true];
+
+        $valReturnMap = $this->valReturnMap;
+        $valReturnMap[] = ['config', $config];
+
+        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
+        $container->method('has')->willReturnMap($hasReturnMap);
+        $container->method('get')->willReturnMap($valReturnMap);
+
+        $this->expectException(RuntimeException::class);
+        ($this->factory)($container, Foo::class);
+    }
+
+    public function provideInvalidConfigurations(): array
+    {
+        $config = 'invalid';
+
+        return [
+            [$config],
+            [[
+                'dependencies' => $config,
+            ]],
+            [[
+                'dependencies' => [
+                    ConfigurationBasedFactory::class => $config,
+                ],
+            ]],
+            [[
+                'dependencies' => [
+                    ConfigurationBasedFactory::class => [
+                        Foo::class => $config,
+                    ],
+                ],
+            ]],
+        ];
     }
 
     public function testThatClassesWithInvalidDependencyConfigurationRaiseException()
