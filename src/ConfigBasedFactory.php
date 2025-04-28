@@ -20,6 +20,16 @@ class ConfigBasedFactory
 {
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
+        if (!method_exists($fqcn, '__construct')) {
+            try {
+                return new $fqcn();
+            } catch (Throwable $ex) {
+                throw new RuntimeException(
+                    "Unable ti instantiate a constructor-less object of class `{$fqcn}`"
+                );
+            }
+        }
+
         $config = $container->has('config') ? $container->get('config') : null;
         $config = $config['dependencies'][static::class][$fqcn] ?? null;
 
