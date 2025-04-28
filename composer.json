@@ -1,5 +1,5 @@
 {
-    "name": "pine3ree/pine3ree-abstract-factories",
+    "name": "pine3ree/pine3ree-generic-factories",
     "description": "Abstract factories based on reflection and configuration",
     "type": "library",
     "keywords": [
