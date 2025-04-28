@@ -33,6 +33,7 @@ class ConfigurationBasedFactory
             return new $fqcn();
         }
 
+        // Try 'config' and 'configuration' keys
         if ($container->has('config')) {
             $config = $container->get('config');
         } elseif ($container->has('configuration')) {
@@ -41,6 +42,7 @@ class ConfigurationBasedFactory
             $config = null;
         }
 
+        // Try nested and direct configuration key
         $fqcn_dependency_config = $config['dependencies'][static::class][$fqcn]
             ?? $config[static::class][$fqcn]
             ?? null;
