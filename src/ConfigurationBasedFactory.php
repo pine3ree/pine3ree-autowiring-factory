@@ -32,6 +32,12 @@ class ConfigurationBasedFactory
 {
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
+        if (!class_exists($fqcn)) {
+            throw new RuntimeException(
+                "Unable to load the requested class `{$fqcn}`"
+            );
+        }
+
         if (!method_exists($fqcn, '__construct')) {
             return new $fqcn();
         }

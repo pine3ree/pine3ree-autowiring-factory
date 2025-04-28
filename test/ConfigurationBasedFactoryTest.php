@@ -69,6 +69,14 @@ class ConfigurationBasedFactoryTest extends TestCase
         $this->container->method('get')->willReturnMap($this->valReturnMap);
     }
 
+    public function testThatNonexistentClassRaisesException()
+    {
+        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
+
+        $this->expectException(RuntimeException::class);
+        ($this->factory)($container, NonEXistentClass::class);
+    }
+
     /**
      * @dataProvider provideValidConfigurations
      */
