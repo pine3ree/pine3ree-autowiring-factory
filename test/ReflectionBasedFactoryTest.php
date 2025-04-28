@@ -11,19 +11,21 @@ namespace pine3ree\test\Container\Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use Throwable;
 use pine3ree\Container\Factory\ReflectionBasedFactory;
+use pine3ree\Container\ParamsResolverInterface;
 use pine3ree\test\Container\Factory\Asset\Bar;
 use pine3ree\test\Container\Factory\Asset\Bat;
-use pine3ree\test\Container\Factory\Asset\Bax;
 use pine3ree\test\Container\Factory\Asset\Baz;
 use pine3ree\test\Container\Factory\Asset\Foo;
+
+use function array_pop;
 
 class ReflectionBasedFactoryTest extends TestCase
 {
     private ContainerInterface $container;
 
     private ReflectionBasedFactory $factory;
+    private ParamsResolverInterface $paramsResolver;
 
     private Bar $bar;
     private Baz $baz;
@@ -39,6 +41,7 @@ class ReflectionBasedFactoryTest extends TestCase
         parent::setUp();
 
         $this->container = $this->getMockBuilder(ContainerInterface::class)->getMock();
+        $this->paramsResolver = $this->getMockBuilder(ParamsResolverInterface::class)->getMock();
 
         $this->factory = new ReflectionBasedFactory();
 
@@ -54,6 +57,7 @@ class ReflectionBasedFactoryTest extends TestCase
             ['baz', true],
             ['bat', true],
             ['not', false],
+            [ParamsResolverInterface::class, true],
         ];
 
         $this->valReturnMap = [
@@ -63,77 +67,23 @@ class ReflectionBasedFactoryTest extends TestCase
             ['bar', $this->bar],
             ['baz', $this->baz],
             ['bat', $this->bat],
+            [ParamsResolverInterface::class, $this->paramsResolver],
         ];
 
         $this->container->method('has')->willReturnMap($this->hasReturnMap);
         $this->container->method('get')->willReturnMap($this->valReturnMap);
+
+        $this->paramsResolver->method('resolve')->willReturnMap([
+            [[Foo::class, '__construct'], null, [$this->container->get(Bar::class), $this->container->get(Baz::class)]],
+            [[Foo::class, '__construct'], [Bar::class => $this->bar, Baz::class => $this->baz], [$this->bar, $this->baz]],
+            [[Bar::class, '__construct'], null, []],
+            [[Baz::class, '__construct'], null, []],
+            [[Bat::class, '__construct'], null, []],
+            [['bar', '__construct'], null, []],
+            [['baz', '__construct'], null, []],
+            [['bat', '__construct'], null, []],
+        ]);
     }
-
-//    /**
-//     * @dataProvider provideValidConfigurations
-//     */
-//    public function testThatFactoryWorksWithValidConfigurations(string $config_key, string $alt_config_key, array $config_array)
-//    {
-//        $hasReturnMap = $this->hasReturnMap;
-//        $hasReturnMap[] = [$config_key, true];
-//        $hasReturnMap[] = [$alt_config_key, false];
-//        $valReturnMap = $this->valReturnMap;
-//        $valReturnMap[] = [$config_key, $config_array];
-//
-//        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
-//        $container->method('has')->willReturnMap($hasReturnMap);
-//        $container->method('get')->willReturnMap($valReturnMap);
-//
-//        $foo = ($this->factory)($container, Foo::class);
-//
-//        self::assertInstanceOf(Foo::class, $foo);
-//    }
-
-//    public function provideValidConfigurations(): array
-//    {
-//        $factory_config_indexed_by_fqcn = [
-//            Foo::class => [
-//                Bar::class,
-//                Baz::class,
-//            ],
-//        ];
-//        $factory_config_indexed_by_name = [
-//            Foo::class => [
-//                'bar',
-//                'baz',
-//            ],
-//        ];
-//
-//        $config_dependencies_by_fqcn = [
-//            'dependencies' => [
-//                ReflectionBasedFactory::class => $factory_config_indexed_by_fqcn,
-//            ],
-//        ];
-//        $config_dependencies_by_name = [
-//            'dependencies' => [
-//                ReflectionBasedFactory::class => $factory_config_indexed_by_name,
-//            ],
-//        ];
-//
-//        $config_direct_by_fqcn = [
-//            ReflectionBasedFactory::class => $factory_config_indexed_by_fqcn
-//        ];
-//        $config_direct_by_name = [
-//            ReflectionBasedFactory::class => $factory_config_indexed_by_name
-//        ];
-//
-//        // [provided_key, missing_key, configuration_array_unser_provided_key]
-//        return [
-//            ['config', 'configuration', $config_dependencies_by_fqcn],
-//            ['config', 'configuration', $config_dependencies_by_name],
-//            ['config', 'configuration', $config_direct_by_fqcn],
-//            ['config', 'configuration', $config_direct_by_name],
-//            ['configuration', 'config', $config_dependencies_by_fqcn],
-//            ['configuration', 'config', $config_dependencies_by_name],
-//            ['configuration', 'config', $config_direct_by_fqcn],
-//            ['configuration', 'config', $config_direct_by_name],
-//        ];
-//    }
 
     public function testThatConstructorLessClassesAreInstantiated()
     {
@@ -163,155 +113,55 @@ class ReflectionBasedFactoryTest extends TestCase
         self::assertInstanceOf(Baz::class, $obj);
     }
 
-//    public function testThatClassesWithMissingMandatoryDependencyConfigurationRaiseException()
-//    {
-//        $hasReturnMap = $this->hasReturnMap;
-//        $hasReturnMap[] = ['config', false];
-//        $hasReturnMap[] = ['configuration', false];
-//
-//        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
-//        $container->method('has')->willReturnMap($hasReturnMap);
-//
-//        $this->expectException(RuntimeException::class);
-//        ($this->factory)($container, Foo::class);
-//    }
+    public function testThatClassesWithResolvableDependenciesAreInstantiated()
+    {
+        $fqcn = Foo::class;
+        $obj = ($this->factory)($this->container, $fqcn);
+        self::assertInstanceOf($fqcn, $obj);
+    }
 
-//    /**
-//     * @dataProvider provideInvalidConfigurations
-//     */
-//    public function testThatInvalidMandatoryConfigurationRaiseException($config)
-//    {
-//        $hasReturnMap = $this->hasReturnMap;
-//        $hasReturnMap[] = ['config', true];
-//
-//        $valReturnMap = $this->valReturnMap;
-//        $valReturnMap[] = ['config', $config];
-//
-//        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
-//        $container->method('has')->willReturnMap($hasReturnMap);
-//        $container->method('get')->willReturnMap($valReturnMap);
-//
-//        $this->expectException(RuntimeException::class);
-//        ($this->factory)($container, Foo::class);
-//    }
+    public function testThatParamsResolversAreCached()
+    {
+        $fqcn = Bar::class;
 
-//    public function provideInvalidConfigurations(): array
-//    {
-//        $config = 'invalid';
-//
-//        return [
-//            [$config],
-//            [[
-//                'dependencies' => $config,
-//            ]],
-//            [[
-//                'dependencies' => [
-//                    ReflectionBasedFactory::class => $config,
-//                ],
-//            ]],
-//            [[
-//                'dependencies' => [
-//                    ReflectionBasedFactory::class => [
-//                        Foo::class => $config,
-//                    ],
-//                ],
-//            ]],
-//        ];
-//    }
+        self::assertNull($this->factory->getCachedParamsResolver($this->container));
 
-//    public function testThatClassesWithInvalidDependencyConfigurationRaiseException()
-//    {
-//        $hasReturnMap = $this->hasReturnMap;
-//        $hasReturnMap[] = ['config', true];
-//        $valReturnMap = $this->valReturnMap;
-//        $valReturnMap[] = ['config', [
-//            'dependencies' => [
-//                ReflectionBasedFactory::class => [
-//                    Foo::class => [
-//                        42, // invalid: must be a string
-//                    ],
-//                ],
-//            ],
-//        ]];
-//
-//        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
-//        $container->method('has')->willReturnMap($hasReturnMap);
-//        $container->method('get')->willReturnMap($valReturnMap);
-//
-//        $this->expectException(RuntimeException::class);
-//        ($this->factory)($container, Foo::class);
-//    }
+        $obj = ($this->factory)($this->container, $fqcn);
 
-//    public function testThatClassesWithContainerAsDependencyAreProvidedWithContainer()
-//    {
-//        $hasReturnMap = $this->hasReturnMap;
-//        $hasReturnMap[] = ['config', true];
-//        $valReturnMap = $this->valReturnMap;
-//        $valReturnMap[] = ['config', [
-//            'dependencies' => [
-//                ReflectionBasedFactory::class => [
-//                    Bax::class => [
-//                        ContainerInterface::class,
-//                    ],
-//                ],
-//            ],
-//        ]];
-//
-//        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
-//        $container->method('has')->willReturnMap($hasReturnMap);
-//        $container->method('get')->willReturnMap($valReturnMap);
-//
-//        $bax = ($this->factory)($container, Bax::class);
-//        self::assertInstanceOf(Bax::class, $bax);
-//        self::assertInstanceOf(ContainerInterface::class, $bax->getContainer());
-//        self::assertSame($container, $bax->getContainer());
-//    }
+        $paramsResolver = $this->factory->getCachedParamsResolver($this->container);
 
-//    public function testThatClassesWithIncompleteDependencyConfigurationRaiseException()
-//    {
-//        $hasReturnMap = $this->hasReturnMap;
-//        $hasReturnMap[] = ['config', true];
-//        $valReturnMap = $this->valReturnMap;
-//        $valReturnMap[] = ['config', [
-//            'dependencies' => [
-//                ReflectionBasedFactory::class => [
-//                    Foo::class => [
-//                        Bar::class,
-//                        //Baz::class, // missing dependency
-//                    ],
-//                ],
-//            ],
-//        ]];
-//
-//        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
-//        $container->method('has')->willReturnMap($hasReturnMap);
-//        $container->method('get')->willReturnMap($valReturnMap);
-//
-//        $this->expectException(Throwable::class);
-//        ($this->factory)($container, Foo::class);
-//    }
+        self::assertInstanceOf(ParamsResolverInterface::class, $paramsResolver);
 
-//    public function testThatClassesWithMissingDependencyRaiseException()
-//    {
-//        $hasReturnMap = $this->hasReturnMap;
-//        $hasReturnMap[] = ['config', true];
-//        $valReturnMap = $this->valReturnMap;
-//        $valReturnMap[] = ['config', [
-//            'dependencies' => [
-//                ReflectionBasedFactory::class => [
-//                    Foo::class => [
-//                        'bar',
-//                        'not', // not in container
-//                    ],
-//                ],
-//            ],
-//        ]];
-//
-//        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
-//        $container->method('has')->willReturnMap($hasReturnMap);
-//        $container->method('get')->willReturnMap($valReturnMap);
-//
-//        $this->expectException(Throwable::class);
-//        ($this->factory)($container, Foo::class);
-//    }
+        $obj = ($this->factory)($this->container, $fqcn);
+
+        self::assertSame($paramsResolver, $this->factory->getCachedParamsResolver($this->container));
+    }
+
+    public function testThatAParamsResolverIsCreatedAndCachedIfNotFoundInContainer()
+    {
+        $fqcn = Bar::class;
+
+        $hasReturnMap = $this->hasReturnMap;
+        array_pop($hasReturnMap);
+        $hasReturnMap[] = [ParamsResolverInterface::class, false];
+
+        $valReturnMap = $this->valReturnMap;
+        array_pop($valReturnMap);
+
+        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
+        $container->method('has')->willReturnMap($hasReturnMap);
+        $container->method('get')->willReturnMap($valReturnMap);
+
+        self::assertNull($this->factory->getCachedParamsResolver($container));
+
+        $obj = ($this->factory)($container, $fqcn);
+
+        $paramsResolver = $this->factory->getCachedParamsResolver($container);
+
+        self::assertInstanceOf(ParamsResolverInterface::class, $paramsResolver);
+
+        $obj = ($this->factory)($container, $fqcn);
+
+        self::assertSame($paramsResolver, $this->factory->getCachedParamsResolver($container));
+    }
 }
