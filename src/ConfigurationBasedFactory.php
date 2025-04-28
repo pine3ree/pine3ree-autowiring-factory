@@ -22,7 +22,7 @@ use function is_string;
  * $config['config|configuration']['dependencies']['pine3ree\Container\ConfigBasedFactory'][$fqcn]
  * $config['config|configuration']['pine3ree\Container\ConfigBasedFactory'][$fqcn]
  */
-class ConfigBasedFactory
+class ConfigurationBasedFactory
 {
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
