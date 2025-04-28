@@ -27,13 +27,7 @@ class ConfigurationBasedFactory
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
         if (!method_exists($fqcn, '__construct')) {
-            try {
-                return new $fqcn();
-            } catch (Throwable $ex) {
-                throw new RuntimeException(
-                    "Unable to instantiate a constructor-less object of class `{$fqcn}`"
-                );
-            }
+            return new $fqcn();
         }
 
         if ($container->has('config')) {
