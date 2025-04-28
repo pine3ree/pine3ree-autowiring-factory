@@ -11,7 +11,8 @@ use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Throwable;
 
-use function class_exists;
+use function get_class;
+use function is_string;
 
 /**
  * A generic factory that resolves and injects dependencies from configuration
@@ -25,15 +26,24 @@ class ConfigBasedFactory
                 return new $fqcn();
             } catch (Throwable $ex) {
                 throw new RuntimeException(
-                    "Unable ti instantiate a constructor-less object of class `{$fqcn}`"
+                    "Unable to instantiate a constructor-less object of class `{$fqcn}`"
                 );
             }
         }
 
-        $config = $container->has('config') ? $container->get('config') : null;
-        $config = $config['dependencies'][static::class][$fqcn] ?? null;
+        if ($container->has('config')) {
+            $config = $container->get('config');
+        } elseif ($container->has('configuration')) {
+            $config = $container->get('configuration');
+        } else {
+            $config = null;
+        }
 
-        if (empty($config)) {
+        $fqcn_dependency_config = $config['dependencies'][static::class][$fqcn]
+            ?? $config[static::class][$fqcn]
+            ?? null;
+
+        if (empty($fqcn_dependency_config)) {
             try {
                 return new $fqcn();
             } catch (Throwable $ex) {
@@ -44,22 +54,20 @@ class ConfigBasedFactory
         }
 
         $dependencies = [];
-        foreach ($config as $dep_fqcn) {
-            if ($dep_fqcn === ContainerInterface::class) {
+        foreach ($fqcn_dependency_config as $dep_name) {
+            if (!is_string($dep_name)) {
+                throw new RuntimeException(
+                    "Configured dependency names for class `{$fqcn}` must be of type `string`!"
+                );
+            } elseif ($dep_name === ContainerInterface::class || $dep_name === get_class($container)) {
                 $dependencies[] = $container;
-                continue;
-            }
-            if (!class_exists($dep_fqcn)) {
+            } elseif ($container->has($dep_name)) {
+               $dependencies[] = $container->get($dep_name);
+            } else {
                 throw new RuntimeException(
-                    "Unable to load the dependency class `{$dep_fqcn}`!"
+                    "Unable to load the dependency `{$dep_name}` for class `{$fqcn}`!"
                 );
             }
-            if (!$container->has($dep_fqcn)) {
-                throw new RuntimeException(
-                    "Unable to load the dependency `{$dep_fqcn}` for class `{$fqcn}`!"
-                );
-            }
-            $dependencies[] = $container->get($dep_fqcn);
         }
 
         return new $fqcn(...$dependencies);
