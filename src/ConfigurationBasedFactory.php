@@ -85,8 +85,8 @@ class ConfigurationBasedFactory
         foreach ($fqcn_dependency_config as $dep_name) {
             if (!is_string($dep_name)) {
                 throw new RuntimeException(
-                "Invalid dependency configuration for class `{$fqcn}`:"
-                . " listed dependency names must be of type `string`!"
+                    "Invalid dependency configuration for class `{$fqcn}`:"
+                    . " listed dependency names must be of type `string`!"
                 );
             } elseif ($dep_name === ContainerInterface::class || $dep_name === get_class($container)) {
                 $dependencies[] = $container;
