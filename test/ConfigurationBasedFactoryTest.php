@@ -11,7 +11,6 @@ namespace pine3ree\test\Container\Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use stdClass;
 use Throwable;
 use pine3ree\Container\Factory\ConfigurationBasedFactory;
 use pine3ree\test\Container\Factory\Asset\Bar;
