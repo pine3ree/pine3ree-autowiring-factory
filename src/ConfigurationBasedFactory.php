@@ -69,15 +69,15 @@ class ConfigurationBasedFactory
                 return new $fqcn();
             } catch (Throwable $ex) {
                 throw new RuntimeException(
-                    "Mandatory factory configuration not found for class `{$fqcn}`!"
+                    "Mandatory dependency configuration not found for class `{$fqcn}`!"
                 );
             }
         }
 
         if (!(is_array($fqcn_dependency_config) || $fqcn_dependency_config instanceof ArrayObject)) {
             throw new RuntimeException(
-                "Invalid dependency configuration type for class `{$fqcn}`."
-                . " Only array and ArrayObject are accepteable types."
+                "Invalid dependency configuration type for class `{$fqcn}`:"
+                . " only array and ArrayObject are accepteable types."
             );
         }
 
@@ -85,7 +85,8 @@ class ConfigurationBasedFactory
         foreach ($fqcn_dependency_config as $dep_name) {
             if (!is_string($dep_name)) {
                 throw new RuntimeException(
-                    "Configured dependency names for class `{$fqcn}` must be of type `string`!"
+                "Invalid dependency configuration for class `{$fqcn}`:"
+                . " listed dependency names must be of type `string`!"
                 );
             } elseif ($dep_name === ContainerInterface::class || $dep_name === get_class($container)) {
                 $dependencies[] = $container;
