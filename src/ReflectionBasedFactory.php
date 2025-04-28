@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package p3im-abstract-factories
+ * @package pine3ree-abstract-factories
  * @author  pine3ree https://github.com/pine3ree
  */
 
