@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @package     pine3ree-abstract-factories
- * @subpackage  pine3ree-abstract-factories-subpackage
+ * @package     pine3ree-generic-factories
+ * @subpackage  pine3ree-generic-factories-subpackage
  * @author      pine3ree https://github.com/pine3ree
  */
 

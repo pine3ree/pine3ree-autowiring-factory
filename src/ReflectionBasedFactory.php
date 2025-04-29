@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package pine3ree-abstract-factories
+ * @package pine3ree-generic-factories
  * @author  pine3ree https://github.com/pine3ree
  */
 
