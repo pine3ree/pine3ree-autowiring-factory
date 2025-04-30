@@ -28,11 +28,11 @@ class ReflectionBasedFactory
      * Params resolvers cached by container
      * @var SplObjectStorage<ContainerInterface, ParamsResolverInterface>
      */
-    private SplObjectStorage $storage;
+    private SplObjectStorage $cache;
 
     public function __construct()
     {
-        $this->storage = new SplObjectStorage();
+        $this->cache = new SplObjectStorage();
     }
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
@@ -56,9 +56,9 @@ class ReflectionBasedFactory
             );
         }
 
-        $storage = $this->storage;
-        if ($storage->offsetExists($container)) {
-            $paramsResolver = $storage->offsetGet($container);
+        $cache = $this->cache;
+        if ($cache->offsetExists($container)) {
+            $paramsResolver = $cache->offsetGet($container);
         } else {
             if ($container->has(ParamsResolverInterface::class)) {
                 $paramsResolver = $container->get(ParamsResolverInterface::class);
@@ -68,7 +68,7 @@ class ReflectionBasedFactory
             } else {
                 $paramsResolver = new ParamsResolver($container);
             }
-            $storage->attach($container, $paramsResolver);
+            $cache->attach($container, $paramsResolver);
         }
 
         try {
@@ -89,8 +89,8 @@ class ReflectionBasedFactory
      */
     public function getCachedParamsResolver(ContainerInterface $container): ?ParamsResolverInterface
     {
-        if ($this->storage->offsetExists($container)) {
-            return $this->storage->offsetGet($container);
+        if ($this->cache->offsetExists($container)) {
+            return $this->cache->offsetGet($container);
         }
 
         return null;
