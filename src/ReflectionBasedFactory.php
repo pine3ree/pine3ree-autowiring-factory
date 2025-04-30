@@ -26,14 +26,9 @@ class ReflectionBasedFactory
 {
     /**
      * Params resolvers cached by container
-     * @var SplObjectStorage<ContainerInterface, ParamsResolverInterface>
+     * @var SplObjectStorage<ContainerInterface, ParamsResolverInterface>|null
      */
-    private SplObjectStorage $cache;
-
-    public function __construct()
-    {
-        $this->cache = new SplObjectStorage();
-    }
+    private ?SplObjectStorage $cache = null;
 
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
@@ -56,7 +51,8 @@ class ReflectionBasedFactory
             );
         }
 
-        $cache = $this->cache;
+        $cache = $this->cache ?? $this->cache = new SplObjectStorage();
+
         if ($cache->offsetExists($container)) {
             $paramsResolver = $cache->offsetGet($container);
         } else {
