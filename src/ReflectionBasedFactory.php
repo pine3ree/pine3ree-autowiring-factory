@@ -53,7 +53,7 @@ class ReflectionBasedFactory
 
         $cache = $this->cache ?? $this->cache = new SplObjectStorage();
 
-        if ($cache->offsetExists($container)) {
+        if ($cache->contains($container)) {
             $paramsResolver = $cache->offsetGet($container);
         } else {
             if ($container->has(ParamsResolverInterface::class)) {
@@ -85,8 +85,10 @@ class ReflectionBasedFactory
      */
     public function getCachedParamsResolver(ContainerInterface $container): ?ParamsResolverInterface
     {
-        if ($this->cache->offsetExists($container)) {
-            return $this->cache->offsetGet($container);
+        if ($this->cache instanceof SplObjectStorage) {
+            if ($this->cache->contains($container)) {
+                return $this->cache->offsetGet($container);
+            }
         }
 
         return null;
