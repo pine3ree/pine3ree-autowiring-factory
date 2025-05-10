@@ -6,7 +6,7 @@
         "pine3ree",
         "factories"
     ],
-    "homepage": "https://github.com/pine3ree/pine3ree-abstract-factories",
+    "homepage": "https://github.com/pine3ree/pine3ree-generic-factories",
     "readme": "README.md",
     "license": "BSD-3-Clause",
     "authors": [
@@ -17,9 +17,9 @@
         }
     ],
     "support": {
-        "docs": "https://github.com/pine3ree/pine3ree-abstract-factories/blob/master/README.md",
-        "issues": "https://github.com/pine3ree/pine3ree-abstract-factories/issues",
-        "source": "https://github.com/pine3ree/pine3ree-abstract-factories"
+        "docs": "https://github.com/pine3ree/pine3ree-generic-factories/blob/master/README.md",
+        "issues": "https://github.com/pine3ree/pine3ree-generic-factories/issues",
+        "source": "https://github.com/pine3ree/pine3ree-generic-factories"
     },
     "config": {
         "sort-packages": true,
