@@ -8,7 +8,6 @@
 namespace pine3ree\Container\Factory;
 
 use Psr\Container\ContainerInterface;
-use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
 use SplObjectStorage;
