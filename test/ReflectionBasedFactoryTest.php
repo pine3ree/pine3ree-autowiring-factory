@@ -10,7 +10,9 @@ namespace pine3ree\test\Container\Factory;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use ReflectionProperty;
 use RuntimeException;
+use SplObjectStorage;
 use pine3ree\Container\Factory\ReflectionBasedFactory;
 use pine3ree\Container\ParamsResolverInterface;
 use pine3ree\test\Container\Factory\Asset\Bar;
@@ -149,17 +151,17 @@ class ReflectionBasedFactoryTest extends TestCase
     {
         $fqcn = Bar::class;
 
-        self::assertNull($this->factory->getCachedParamsResolver($this->container));
+        self::assertNull($this->getCachedParamsResolver($this->factory, $this->container));
 
         $obj = ($this->factory)($this->container, $fqcn);
 
-        $paramsResolver = $this->factory->getCachedParamsResolver($this->container);
+        $paramsResolver = $this->getCachedParamsResolver($this->factory, $this->container);
 
         self::assertInstanceOf(ParamsResolverInterface::class, $paramsResolver);
 
         $obj = ($this->factory)($this->container, $fqcn);
 
-        self::assertSame($paramsResolver, $this->factory->getCachedParamsResolver($this->container));
+        self::assertSame($paramsResolver, $this->getCachedParamsResolver($this->factory, $this->container));
     }
 
     public function testThatAParamsResolverIsCreatedAndCachedIfNotFoundInContainer()
@@ -177,16 +179,36 @@ class ReflectionBasedFactoryTest extends TestCase
         $container->method('has')->willReturnMap($hasReturnMap);
         $container->method('get')->willReturnMap($valReturnMap);
 
-        self::assertNull($this->factory->getCachedParamsResolver($container));
+        self::assertNull($this->getCachedParamsResolver($this->factory, $container));
 
         $obj = ($this->factory)($container, $fqcn);
 
-        $paramsResolver = $this->factory->getCachedParamsResolver($container);
+        $paramsResolver = $this->getCachedParamsResolver($this->factory, $container);
 
         self::assertInstanceOf(ParamsResolverInterface::class, $paramsResolver);
 
         $obj = ($this->factory)($container, $fqcn);
 
-        self::assertSame($paramsResolver, $this->factory->getCachedParamsResolver($container));
+        self::assertSame($paramsResolver, $this->getCachedParamsResolver($this->factory, $container));
+    }
+
+    private function getCachedParamsResolver(
+        ?ReflectionBasedFactory $factory = null,
+        ?ContainerInterface $container = null
+    ): ?ParamsResolverInterface {
+        $factory = $factory ?? $this->factory;
+        $container = $container ?? $this->container;
+
+        $cacheProp = new ReflectionProperty($factory, 'cache');
+        $cacheProp->setAccessible(true);
+        $cache = $cacheProp->getValue($factory);
+
+        if ($cache instanceof SplObjectStorage) {
+            if ($cache->contains($container)) {
+                return $cache->offsetGet($container);
+            }
+        }
+
+        return null;
     }
 }

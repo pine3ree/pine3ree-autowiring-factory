@@ -73,23 +73,4 @@ class ReflectionBasedFactory
             throw new RuntimeException($ex->getMessage());
         }
     }
-
-    /**
-     * Fetch a catched resolver for given container, if any
-     *
-     * @param ContainerInterface $container
-     * @return ParamsResolverInterface|null
-     *
-     * @internal Used in unit tests
-     */
-    public function getCachedParamsResolver(ContainerInterface $container): ?ParamsResolverInterface
-    {
-        if ($this->cache instanceof SplObjectStorage) {
-            if ($this->cache->contains($container)) {
-                return $this->cache->offsetGet($container);
-            }
-        }
-
-        return null;
-    }
 }
