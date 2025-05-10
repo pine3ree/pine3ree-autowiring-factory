@@ -93,7 +93,7 @@ class ConfigurationBasedFactory
             } elseif ($container->has($dep_name)) {
                 $dep_args[] = $container->get($dep_name);
             } else {
-                throw new RuntimeException(
+                throw $ex = new RuntimeException(
                     "Unable to load the dependency `{$dep_name}` for class `{$fqcn}`!"
                 );
             }
@@ -103,7 +103,8 @@ class ConfigurationBasedFactory
             return new $fqcn(...$dep_args);
         } catch (Throwable $ex) {
             throw new RuntimeException(
-                "Unable to instantiate an object of class `{$fqcn}` with provided configuration"
+                "Unable to instantiate an object of class `{$fqcn}` with provided"
+                . " configuration ({$ex->getMessage()})."
             );
         }
     }
