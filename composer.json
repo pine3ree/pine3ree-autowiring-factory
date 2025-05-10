@@ -29,7 +29,7 @@
     },
     "require": {
         "php": "^7.4 || ^8.0",
-        "pine3ree/pine3ree-params-resolver": "^0.8 || ^0.9",
+        "pine3ree/pine3ree-params-resolver": "^1.0",
         "psr/container": "^1.1.2 || ^2.0"
     },
     "require-dev": {
