@@ -15,6 +15,7 @@ use SplObjectStorage;
 use Throwable;
 use pine3ree\Container\ParamsResolver;
 use pine3ree\Container\ParamsResolverInterface;
+use pine3ree\Helper\Reflection;
 
 use function class_exists;
 use function method_exists;
@@ -42,8 +43,7 @@ class ReflectionBasedFactory
             return new $fqcn();
         }
 
-        $rc = new ReflectionClass($fqcn);
-        $rm = $rc->getConstructor();
+        $rm = Reflection::getConstructor($fqcn);
         /** @var ReflectionMethod $rm Existence tested before */
         if ($rm->isPrivate()) {
             throw new RuntimeException(
