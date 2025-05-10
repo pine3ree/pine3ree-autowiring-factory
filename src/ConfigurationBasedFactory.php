@@ -77,7 +77,7 @@ class ConfigurationBasedFactory
         if (!(is_array($fqcn_dependency_config) || $fqcn_dependency_config instanceof ArrayObject)) {
             throw new RuntimeException(
                 "Invalid dependency configuration type for class `{$fqcn}`:"
-                . " only array and ArrayObject are accepteable types."
+                . " only array and ArrayObject are acceptable types."
             );
         }
 
