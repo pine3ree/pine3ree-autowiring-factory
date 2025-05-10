@@ -81,7 +81,7 @@ class ConfigurationBasedFactory
             );
         }
 
-        $dependencies = [];
+        $dep_args = [];
         foreach ($fqcn_dependency_config as $dep_name) {
             if (!is_string($dep_name)) {
                 throw new RuntimeException(
@@ -89,9 +89,9 @@ class ConfigurationBasedFactory
                     . " listed dependency names must be of type `string`!"
                 );
             } elseif ($dep_name === ContainerInterface::class || $dep_name === get_class($container)) {
-                $dependencies[] = $container;
+                $dep_args[] = $container;
             } elseif ($container->has($dep_name)) {
-                $dependencies[] = $container->get($dep_name);
+                $dep_args[] = $container->get($dep_name);
             } else {
                 throw new RuntimeException(
                     "Unable to load the dependency `{$dep_name}` for class `{$fqcn}`!"
@@ -100,7 +100,7 @@ class ConfigurationBasedFactory
         }
 
         try {
-            return new $fqcn(...$dependencies);
+            return new $fqcn(...$dep_args);
         } catch (Throwable $ex) {
             throw new RuntimeException(
                 "Unable to instantiate an object of class `{$fqcn}` with provided configuration"
