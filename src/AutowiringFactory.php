@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package pine3ree-generic-factories
+ * @package pine3ree-autowiring-factory
  * @author  pine3ree https://github.com/pine3ree
  */
 

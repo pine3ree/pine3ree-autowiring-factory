@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @package     pine3ree-generic-factories
- * @subpackage  pine3ree-generic-factories-subpackage
+ * @package     pine3ree-autowiring-factory
+ * @subpackage  pine3ree-autowiring-factory-test
  * @author      pine3ree https://github.com/pine3ree
  */
 
