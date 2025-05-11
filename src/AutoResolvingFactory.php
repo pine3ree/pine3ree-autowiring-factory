@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package pine3ree-autowiring-factory
+ * @package pine3ree-auto-resolving-factory
  * @author  pine3ree https://github.com/pine3ree
  */
 
@@ -22,7 +22,7 @@ use function method_exists;
 /**
  * A generic factory that resolves and injects dependencies using reflection
  */
-class AutowiringFactory
+class AutoResolvingFactory
 {
     /**
      * Params resolvers cached by container

@@ -1,14 +1,14 @@
 {
-    "name": "pine3ree/pine3ree-autowiring-factory",
-    "description": "Autowiring factory based on reflection",
+    "name": "pine3ree/pine3ree-auto-resolving-factory",
+    "description": "A ioc factory that resolves dependencies using reflection",
     "type": "library",
     "keywords": [
         "pine3ree",
         "factory",
-        "autowiring",
-        "reflction"
+        "container",
+        "reflection"
     ],
-    "homepage": "https://github.com/pine3ree/pine3ree-autowiring-factory",
+    "homepage": "https://github.com/pine3ree/pine3ree-auto-resolving-factory",
     "readme": "README.md",
     "license": "BSD-3-Clause",
     "authors": [
@@ -19,9 +19,9 @@
         }
     ],
     "support": {
-        "docs": "https://github.com/pine3ree/pine3ree-autowiring-factory/blob/master/README.md",
-        "issues": "https://github.com/pine3ree/pine3ree-autowiring-factory/issues",
-        "source": "https://github.com/pine3ree/pine3ree-autowiring-factory"
+        "docs": "https://github.com/pine3ree/pine3ree-auto-resolving-factory/blob/master/README.md",
+        "issues": "https://github.com/pine3ree/pine3ree-auto-resolving-factory/issues",
+        "source": "https://github.com/pine3ree/pine3ree-auto-resolving-factory"
     },
     "prefer-stable": true,
     "minimum-stability": "dev",
