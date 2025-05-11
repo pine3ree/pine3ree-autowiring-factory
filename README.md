@@ -64,7 +64,7 @@ The requested service constructor's arguments are resolved in the following way:
    try to instantiate the class directly. An exception is thrown on failure.
 
 1. If the argument is not type-hinted or is type-hinted with a builtin type the
-   factory will try to load a service or a prameter value registered in the
-   container with the parameter name as identifier
+   factory will try to load a service or a parameter value registered in the
+   container with the parameter name as identifier.
    If not found, the factory will try the default provided value, if any, then
    the `null` value if the argument is nullable, otherwise an exception is thrown.
