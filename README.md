@@ -2,8 +2,8 @@
 
 [![Continuous Integration](https://github.com/pine3ree/pine3ree-autowiring-factory/actions/workflows/continuos-integration.yml/badge.svg)](https://github.com/pine3ree/pine3ree-autowiring-factory/actions/workflows/continuos-integration.yml)
 
-This package provides an autowiring reflection-based factory, which is based on
-the `pine3ree-params-resolver` package
+This package provides an autowiring reflection-based factory, which operates
+using the [`pine3ree-params-resolver`](https://github.com/pine3ree/pine3ree-params-resolver) library
 
 Example:
 
