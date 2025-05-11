@@ -45,8 +45,8 @@ $factory = new AutowiringFactory(); // We need just one instance of it
 $postMapper = $factory($container, PostMapper::class);
 
 ```
-So if the container configuration for the service `PostMapper::class` instructs
-the container to use the autowirng-factory, you can just fetch the service instance
+If the container configuration for the service `PostMapper::class` instructs
+the container to use the autowiring-factory, you can just fetch the service instance
 from the container:
 ```php
 $postMapper = $container->get(PostMapper::class);
