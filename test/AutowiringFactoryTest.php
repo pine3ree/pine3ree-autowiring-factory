@@ -13,7 +13,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 use RuntimeException;
 use SplObjectStorage;
-use pine3ree\Container\Factory\ReflectionBasedFactory;
+use pine3ree\Container\Factory\AutowiringFactory;
 use pine3ree\Container\ParamsResolverInterface;
 use pine3ree\test\Container\Factory\Asset\Bar;
 use pine3ree\test\Container\Factory\Asset\Bat;
@@ -22,11 +22,11 @@ use pine3ree\test\Container\Factory\Asset\Foo;
 
 use function array_pop;
 
-class ReflectionBasedFactoryTest extends TestCase
+class AutowiringFactoryTest extends TestCase
 {
     private ContainerInterface $container;
 
-    private ReflectionBasedFactory $factory;
+    private AutowiringFactory $factory;
     private ParamsResolverInterface $paramsResolver;
 
     private Bar $bar;
@@ -45,7 +45,7 @@ class ReflectionBasedFactoryTest extends TestCase
         $this->container = $this->getMockBuilder(ContainerInterface::class)->getMock();
         $this->paramsResolver = $this->getMockBuilder(ParamsResolverInterface::class)->getMock();
 
-        $this->factory = new ReflectionBasedFactory();
+        $this->factory = new AutowiringFactory();
 
         $this->bar = new Bar();
         $this->baz = new Baz();
@@ -193,7 +193,7 @@ class ReflectionBasedFactoryTest extends TestCase
     }
 
     private function getCachedParamsResolver(
-        ?ReflectionBasedFactory $factory = null,
+        ?AutowiringFactory $factory = null,
         ?ContainerInterface $container = null
     ): ?ParamsResolverInterface {
         $factory = $factory ?? $this->factory;

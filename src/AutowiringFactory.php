@@ -22,7 +22,7 @@ use function method_exists;
 /**
  * A generic factory that resolves and injects dependencies using reflection
  */
-class ReflectionBasedFactory
+class AutowiringFactory
 {
     /**
      * Params resolvers cached by container
