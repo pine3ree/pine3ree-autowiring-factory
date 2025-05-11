@@ -45,9 +45,25 @@ $factory = new AutoResolvingFactory(); // We need just one instance of it
 $postMapper = $factory($container, PostMapper::class);
 
 ```
+
 If the container configuration for the service `PostMapper::class` instructs
 the container to use the auto-resolving-factory, you can just fetch the service instance
 from the container:
 ```php
 $postMapper = $container->get(PostMapper::class);
 ```
+
+The requested service constructor's arguments are resolved in the following way:
+
+1. If the argument is a type-hinted dependency with a fully-qualified-class/interface
+   name the factory tries to load a dependency registered in the container with
+   that class-string as identifier.
+   If no such dependency is found, the factory will try the default provided value,
+   if any, then the `null` value if the argument is nullable, and eventually it will
+   try to instantiate the class directly. An exception is thrown on failure.
+
+1. If the argument is not type-hinted or is type-hinted with a builtin type the
+   factory will try to load a service or a prameter value registered in the
+   container with the parameter name as identifier
+   If not found, the factory will try the default provided value, if any, then
+   the `null` value if the argument is nullable, otherwise an exception is thrown.
