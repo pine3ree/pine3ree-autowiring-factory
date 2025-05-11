@@ -1,12 +1,14 @@
 {
-    "name": "pine3ree/pine3ree-generic-factories",
-    "description": "Abstract factories based on reflection and configuration",
+    "name": "pine3ree/pine3ree-autowiring-factory",
+    "description": "Autowiring factory based on reflection",
     "type": "library",
     "keywords": [
         "pine3ree",
-        "factories"
+        "factory",
+        "autowiring",
+        "reflction"
     ],
-    "homepage": "https://github.com/pine3ree/pine3ree-generic-factories",
+    "homepage": "https://github.com/pine3ree/pine3ree-autowiring-factory",
     "readme": "README.md",
     "license": "BSD-3-Clause",
     "authors": [
@@ -17,15 +19,15 @@
         }
     ],
     "support": {
-        "docs": "https://github.com/pine3ree/pine3ree-generic-factories/blob/master/README.md",
-        "issues": "https://github.com/pine3ree/pine3ree-generic-factories/issues",
-        "source": "https://github.com/pine3ree/pine3ree-generic-factories"
+        "docs": "https://github.com/pine3ree/pine3ree-autowiring-factory/blob/master/README.md",
+        "issues": "https://github.com/pine3ree/pine3ree-autowiring-factory/issues",
+        "source": "https://github.com/pine3ree/pine3ree-autowiring-factory"
     },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
     "config": {
         "sort-packages": true,
-        "optimize-autoloader": true,
-        "prefer-stable": true,
-        "minimum-stability": "dev"
+        "optimize-autoloader": true
     },
     "require": {
         "php": "^7.4 || ^8.0",
