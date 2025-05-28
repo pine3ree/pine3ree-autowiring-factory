@@ -68,7 +68,8 @@ class AutoResolvingFactory
             );
         }
 
-        $cache = self::$cache ?? self::$cache = new SplObjectStorage();
+        /** @var SplObjectStorage<ContainerInterface, ParamsResolverInterface> $cache */
+        $cache = self::$cache ?? self::$cache = new SplObjectStorage(); // @phpstan-ignore-line
 
         if ($cache->contains($container)) {
             $paramsResolver = $cache->offsetGet($container);
