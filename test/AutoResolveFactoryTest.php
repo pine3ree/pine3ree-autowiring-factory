@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @package     pine3ree-auto-resolving-factory
- * @subpackage  pine3ree-auto-resolving-factory-test
+ * @package     pine3ree-auto-resolve-factory
+ * @subpackage  pine3ree-auto-resolve-factory-test
  * @author      pine3ree https://github.com/pine3ree
  */
 
@@ -13,7 +13,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 use RuntimeException;
 use SplObjectStorage;
-use pine3ree\Container\Factory\AutoResolvingFactory;
+use pine3ree\Container\Factory\AutoResolveFactory;
 use pine3ree\Container\ParamsResolverInterface;
 use pine3ree\test\Container\Factory\Asset\Bar;
 use pine3ree\test\Container\Factory\Asset\Bat;
@@ -22,11 +22,11 @@ use pine3ree\test\Container\Factory\Asset\Foo;
 
 use function array_pop;
 
-class AutoResolvingFactoryTest extends TestCase
+class AutoResolveFactoryTest extends TestCase
 {
     private ContainerInterface $container;
 
-    private AutoResolvingFactory $factory;
+    private AutoResolveFactory $factory;
     private ParamsResolverInterface $paramsResolver;
 
     private Bar $bar;
@@ -45,7 +45,7 @@ class AutoResolvingFactoryTest extends TestCase
         $this->container = $this->getMockBuilder(ContainerInterface::class)->getMock();
         $this->paramsResolver = $this->getMockBuilder(ParamsResolverInterface::class)->getMock();
 
-        $this->factory = new AutoResolvingFactory();
+        $this->factory = new AutoResolveFactory();
 
         $this->bar = new Bar();
         $this->baz = new Baz();
@@ -193,7 +193,7 @@ class AutoResolvingFactoryTest extends TestCase
     }
 
     private function getCachedParamsResolver(
-        ?AutoResolvingFactory $factory = null,
+        ?AutoResolveFactory $factory = null,
         ?ContainerInterface $container = null
     ): ?ParamsResolverInterface {
         $factory = $factory ?? $this->factory;

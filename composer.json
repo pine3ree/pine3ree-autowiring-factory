@@ -1,5 +1,5 @@
 {
-    "name": "pine3ree/pine3ree-auto-resolving-factory",
+    "name": "pine3ree/pine3ree-auto-resolve-factory",
     "description": "A ioc factory that resolves dependencies using reflection",
     "type": "library",
     "keywords": [
@@ -8,7 +8,7 @@
         "container",
         "reflection"
     ],
-    "homepage": "https://github.com/pine3ree/pine3ree-auto-resolving-factory",
+    "homepage": "https://github.com/pine3ree/pine3ree-auto-resolve-factory",
     "readme": "README.md",
     "license": "BSD-3-Clause",
     "authors": [
@@ -19,9 +19,9 @@
         }
     ],
     "support": {
-        "docs": "https://github.com/pine3ree/pine3ree-auto-resolving-factory/blob/master/README.md",
-        "issues": "https://github.com/pine3ree/pine3ree-auto-resolving-factory/issues",
-        "source": "https://github.com/pine3ree/pine3ree-auto-resolving-factory"
+        "docs": "https://github.com/pine3ree/pine3ree-auto-resolve-factory/blob/master/README.md",
+        "issues": "https://github.com/pine3ree/pine3ree-auto-resolve-factory/issues",
+        "source": "https://github.com/pine3ree/pine3ree-auto-resolve-factory"
     },
     "prefer-stable": true,
     "minimum-stability": "dev",
