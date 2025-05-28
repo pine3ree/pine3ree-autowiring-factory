@@ -6,13 +6,17 @@
  * @author      pine3ree https://github.com/pine3ree
  */
 
+declare(strict_types=1);
+
 namespace pine3ree\test\Container\Factory;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
-use RuntimeException;
 use SplObjectStorage;
+use pine3ree\Container\Factory\Exception\AutoResolveClassNotFoundException;
+use pine3ree\Container\Factory\Exception\AutoResolveFactoryException;
+use pine3ree\Container\Factory\Exception\AutoResolvePrivateConstructorException;
 use pine3ree\Container\Factory\AutoResolveFactory;
 use pine3ree\Container\ParamsResolverInterface;
 use pine3ree\test\Container\Factory\Asset\Bar;
@@ -97,7 +101,7 @@ class AutoResolveFactoryTest extends TestCase
     {
         $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(AutoResolveClassNotFoundException::class);
         ($this->factory)($container, NonEXistentClass::class);
     }
 
@@ -105,7 +109,7 @@ class AutoResolveFactoryTest extends TestCase
     {
         $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(AutoResolvePrivateConstructorException::class);
         ($this->factory)($container, Bat::class);
     }
 
@@ -143,7 +147,7 @@ class AutoResolveFactoryTest extends TestCase
             [ParamsResolverInterface::class, $paramsResolver],
         ]);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(AutoResolveFactoryException::class);
         ($this->factory)($container, $fqcn);
     }
 

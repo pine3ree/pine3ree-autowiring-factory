@@ -5,13 +5,17 @@
  * @author  pine3ree https://github.com/pine3ree
  */
 
+declare(strict_types=1);
+
 namespace pine3ree\Container\Factory;
 
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
-use RuntimeException;
 use SplObjectStorage;
 use Throwable;
+use pine3ree\Container\Factory\Exception\AutoResolveClassNotFoundException;
+use pine3ree\Container\Factory\Exception\AutoResolveFactoryException;
+use pine3ree\Container\Factory\Exception\AutoResolvePrivateConstructorException;
 use pine3ree\Container\ParamsResolver;
 use pine3ree\Container\ParamsResolverInterface;
 use pine3ree\Helper\Reflection;
@@ -46,12 +50,12 @@ class AutoResolveFactory
      * @param string $fqcn The fully-qialified class-name of the object we want to build
      * @param ContainerInterface $container The container providing dependencies and optionally parameters
      * @return object
-     * @throws RuntimeException
+     * @throws AutoResolveFactoryException
      */
     public static function create(string $fqcn, ContainerInterface $container): object
     {
         if (!class_exists($fqcn)) {
-            throw new RuntimeException(
+            throw new AutoResolveClassNotFoundException(
                 "Unable to load the requested class `{$fqcn}`"
             );
         }
@@ -63,7 +67,7 @@ class AutoResolveFactory
         $rm = Reflection::getConstructor($fqcn);
         /** @var ReflectionMethod $rm Existence tested before */
         if ($rm->isPrivate()) {
-            throw new RuntimeException(
+            throw new AutoResolvePrivateConstructorException(
                 "Unable to call the private constructor of the requested class `{$fqcn}`"
             );
         }
@@ -89,7 +93,7 @@ class AutoResolveFactory
             $args = $paramsResolver->resolve([$fqcn, '__construct']);
             return empty($args) ? new $fqcn() : new $fqcn(...$args);
         } catch (Throwable $ex) {
-            throw new RuntimeException($ex->getMessage());
+            throw new AutoResolveFactoryException($ex->getMessage());
         }
     }
 }
