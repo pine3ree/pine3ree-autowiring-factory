@@ -37,18 +37,18 @@ class AutoResolvingFactory
      */
     public function __invoke(ContainerInterface $container, string $fqcn): object
     {
-        return self::create($container, $fqcn);
+        return self::create($fqcn, $container);
     }
 
     /**
      * The factory method
      *
-     * @param ContainerInterface $container The container providing dependencies and optionally parameters
      * @param string $fqcn The fully-qialified class-name of the object we want to build
+     * @param ContainerInterface $container The container providing dependencies and optionally parameters
      * @return object
      * @throws RuntimeException
      */
-    public static function create(ContainerInterface $container, string $fqcn): object
+    public static function create(string $fqcn, ContainerInterface $container): object
     {
         if (!class_exists($fqcn)) {
             throw new RuntimeException(
