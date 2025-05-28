@@ -28,9 +28,27 @@ class AutoResolvingFactory
      * Params resolvers cached by container
      * @var SplObjectStorage<ContainerInterface, ParamsResolverInterface>|null
      */
-    private ?SplObjectStorage $cache = null;
+    private static ?SplObjectStorage $cache = null;
 
+    /**
+     * Make the factory instance invokable
+     *
+     * @see self::create()
+     */
     public function __invoke(ContainerInterface $container, string $fqcn): object
+    {
+        return self::create($container, $fqcn);
+    }
+
+    /**
+     * The factory method
+     *
+     * @param ContainerInterface $container The container providing dependencies and optionally parameters
+     * @param string $fqcn The fully-qialified class-name of the object we want to build
+     * @return object
+     * @throws RuntimeException
+     */
+    public static function create(ContainerInterface $container, string $fqcn): object
     {
         if (!class_exists($fqcn)) {
             throw new RuntimeException(
@@ -50,7 +68,7 @@ class AutoResolvingFactory
             );
         }
 
-        $cache = $this->cache ?? $this->cache = new SplObjectStorage();
+        $cache = self::$cache ?? self::$cache = new SplObjectStorage();
 
         if ($cache->contains($container)) {
             $paramsResolver = $cache->offsetGet($container);
