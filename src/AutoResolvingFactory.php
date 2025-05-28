@@ -57,7 +57,7 @@ class AutoResolvingFactory
         } else {
             if ($container->has(ParamsResolverInterface::class)) {
                 $paramsResolver = $container->get(ParamsResolverInterface::class);
-                if (! $paramsResolver instanceof ParamsResolverInterface) {
+                if ($paramsResolver instanceof ParamsResolverInterface !== true) {
                     $paramsResolver = new ParamsResolver($container);
                 }
             } else {
