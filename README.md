@@ -72,3 +72,61 @@ The requested service constructor's arguments are resolved in the following way:
    container with the parameter name as identifier.
    If not found, the factory will try the default provided value, if any, then
    the `null` value if the argument is nullable, otherwise an exception is thrown.
+
+## Example configuration for Mezzio
+
+```php
+// file: config/dependencies.php
+
+//...
+use My\App\Database\ConnectionInterface;
+use My\App\Database\PdoConnection;
+use My\App\Database\PdoConnectionFactory;
+use My\App\Database\HydratorInterface;
+use My\App\Model\PostMapper;
+use pine3ree\Container\Factory\AutoResolveFactory;
+//...
+
+return [
+    //...
+    'invokables' => [
+        //...
+        HydratorInterface::class => HydratorInterface::class,
+        //...
+    ],
+    'aliases' => [
+        //...
+        ConnectionInterface::class => PdoConnection::class,
+        //...
+    ],
+    'factories' => [
+        //...
+        PdoConnection::class => PdoConnectionFactory::class,
+        PostMapper::class => AutoResolveFactory::class, // *
+        PostListHandler::class => AutoResolveFactory::class, // *
+        //...
+    ],
+    //...
+];
+
+// file: my/App/Handler/PostListHandler.php ------------------------------------
+
+use My\App\Model\PostMapper;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class PostListHandler implements RequestHandlerInterface
+{
+    public function __construct(PostMapper $postMapper): ResponseInterface
+    {
+        $this->postMapper = $postMapper;
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        // use $this->postMapper and $request to build and return a response
+    }
+}
+
+```
