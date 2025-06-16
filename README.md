@@ -12,21 +12,25 @@ Example:
 
 // file: src/My/App/Model/PostMapper.php
 
-use My\App\Database\DbInterface;
-use My\App\Database\Db\HydratorInterface;
-use My\App\Configuration\Config;
+use My\App\Database\ConnectionInterface;
+use My\App\Database\HydratorInterface;
+//...
 
 class PostMapper
 {
-    //...
+    ConnectionInterface $db;
+    HydratorInterface $hydrator;
 
-    public function __construct(DbInterface $db, HydratorInterface $hydrator)
+    public function __construct(ConnectionInterface $db, HydratorInterface $hydrator)
     {
-        // ... inject deps here
+        $this->db = $db;
+        $this->hydrator = $hydrator;
     }
+
+    //...
 }
 
-/// ---
+//------------------------------------------------------------------------------
 
 // file: test.php
 
@@ -40,7 +44,7 @@ $factory = new AutoResolveFactory(); // We need just one instance of it
 
 // All dependencies of PostMapper are resolved by the factory if they are found
 // in the container, i.e. if:
-// - $container->get(DbInterface::class) returns a DbInterface object
+// - $container->get(ConnectionInterface::class) returns a ConnectionInterface object
 // - $container->get(HydratorInterface::class) returns a HydratorInterface object
 
 $postMapper = $factory($container, PostMapper::class);
